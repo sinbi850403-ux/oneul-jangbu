@@ -75,12 +75,6 @@ export default function DashboardLayout() {
         </nav>
 
         <div className="px-3 py-4 border-t border-gray-100 flex flex-col gap-2">
-          <a
-            href="/"
-            className="px-4 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-50 text-center"
-          >
-            모바일 앱으로
-          </a>
           <button
             onClick={handleLogout}
             className="px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-gray-50"
