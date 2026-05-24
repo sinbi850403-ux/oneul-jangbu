@@ -57,7 +57,12 @@ export default function Login() {
           />
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          {message && <p className="text-green-600 text-sm text-center">{message}</p>}
+          {message && (
+            <div className="text-center">
+              <p className="text-green-600 text-sm">{message}</p>
+              <p className="text-gray-400 text-xs mt-1">발신: noreply@mail.app.supabase.io</p>
+            </div>
+          )}
 
           <button
             type="submit"
