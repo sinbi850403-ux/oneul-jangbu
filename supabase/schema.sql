@@ -21,6 +21,11 @@ create table sales (
 create table profiles (
   user_id uuid primary key references auth.users,
   shop_name text,
+  owner_name text,
+  biz_number text,
+  biz_category text,
+  biz_type text,
+  address text,
   tax_type text default 'general',
   created_at timestamptz default now()
 );
