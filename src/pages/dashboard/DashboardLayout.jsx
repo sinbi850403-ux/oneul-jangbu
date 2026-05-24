@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase.js'
 
@@ -13,6 +13,16 @@ const menus = [
 export default function DashboardLayout() {
   const navigate = useNavigate()
   const [deleting, setDeleting] = useState(false)
+  const [shopName, setShopName] = useState('')
+
+  useEffect(() => {
+    async function loadShopName() {
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data } = await supabase.from('profiles').select('shop_name').eq('user_id', user.id).single()
+      if (data?.shop_name) setShopName(data.shop_name)
+    }
+    loadShopName()
+  }, [])
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -42,7 +52,8 @@ export default function DashboardLayout() {
       <aside className="w-56 bg-white border-r border-gray-100 flex flex-col">
         <div className="px-6 py-6 border-b border-gray-100">
           <h1 className="text-2xl font-bold text-brand">오늘장부</h1>
-          <p className="text-xs text-gray-400 mt-1">관리자 대시보드</p>
+          <p className="text-sm font-medium text-gray-700 mt-1">{shopName || '내 가게'}</p>
+          <p className="text-xs text-gray-400">관리자 대시보드</p>
         </div>
 
         <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
