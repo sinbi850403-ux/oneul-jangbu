@@ -11,6 +11,7 @@ import BizInfo from './pages/dashboard/BizInfo.jsx'
 import MonthlyReport from './pages/dashboard/MonthlyReport.jsx'
 import ExcelExport from './pages/dashboard/ExcelExport.jsx'
 import DashboardTax from './pages/dashboard/DashboardTax.jsx'
+import DashboardInput from './pages/dashboard/DashboardInput.jsx'
 import { useAuth } from './hooks/useAuth.js'
 
 function ProtectedLayout() {
@@ -73,7 +74,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashboardGuard />}>
-          <Route index element={<Navigate to="/dashboard/biz" replace />} />
+          <Route index element={<Navigate to="/dashboard/input" replace />} />
+          <Route path="input"  element={<DashboardInput />} />
           <Route path="biz"    element={<BizInfo />} />
           <Route path="report" element={<MonthlyReport />} />
           <Route path="excel"  element={<ExcelExport />} />
