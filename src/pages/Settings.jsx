@@ -87,6 +87,13 @@ export default function Settings() {
         {saving ? '저장 중...' : '저장하기'}
       </button>
 
+      <a
+        href="/dashboard"
+        className="w-full text-center text-gray-500 text-sm py-3 block"
+      >
+        PC 대시보드로 →
+      </a>
+
       <button
         onClick={handleLogout}
         className="w-full text-gray-400 text-sm py-3"
