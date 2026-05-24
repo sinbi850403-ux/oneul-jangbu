@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase.js'
 
@@ -11,8 +12,27 @@ const menus = [
 
 export default function DashboardLayout() {
   const navigate = useNavigate()
+  const [deleting, setDeleting] = useState(false)
 
   async function handleLogout() {
+    await supabase.auth.signOut()
+    navigate('/login')
+  }
+
+  async function handleDeleteAccount() {
+    if (!window.confirm('정말 탈퇴하시겠어요?\n모든 매출 데이터와 계정이 즉시 삭제되며 복구할 수 없습니다.')) return
+    setDeleting(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+    const json = await res.json()
+    if (!res.ok) {
+      setDeleting(false)
+      alert(json.error || '탈퇴 처리 중 오류가 발생했어요.')
+      return
+    }
     await supabase.auth.signOut()
     navigate('/login')
   }
@@ -55,6 +75,13 @@ export default function DashboardLayout() {
             className="px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-gray-50"
           >
             로그아웃
+          </button>
+          <button
+            onClick={handleDeleteAccount}
+            disabled={deleting}
+            className="px-4 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-50 disabled:opacity-50"
+          >
+            {deleting ? '탈퇴 처리 중...' : '회원 탈퇴'}
           </button>
         </div>
       </aside>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import Toast from '../components/Toast.jsx'
 
@@ -7,6 +8,8 @@ export default function Settings() {
   const [taxType, setTaxType] = useState('general')
   const [toast, setToast] = useState('')
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function load() {
@@ -38,6 +41,25 @@ export default function Settings() {
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    navigate('/login')
+  }
+
+  async function handleDeleteAccount() {
+    if (!window.confirm('정말 탈퇴하시겠어요?\n모든 매출 데이터와 계정이 즉시 삭제되며 복구할 수 없습니다.')) return
+    setDeleting(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+    const json = await res.json()
+    if (!res.ok) {
+      setDeleting(false)
+      setToast(json.error || '탈퇴 처리 중 오류가 발생했어요 ❌')
+      return
+    }
+    await supabase.auth.signOut()
+    navigate('/login')
   }
 
   return (
@@ -99,6 +121,14 @@ export default function Settings() {
         className="w-full text-gray-400 text-sm py-3"
       >
         로그아웃
+      </button>
+
+      <button
+        onClick={handleDeleteAccount}
+        disabled={deleting}
+        className="w-full text-red-400 text-sm py-3 disabled:opacity-50"
+      >
+        {deleting ? '탈퇴 처리 중...' : '회원 탈퇴'}
       </button>
 
       {toast && <Toast message={toast} onClose={() => setToast('')} />}
