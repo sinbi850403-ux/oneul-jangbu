@@ -20,7 +20,7 @@ export default function Login() {
     if (isSignUp) {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) setError(error.message)
-      else setMessage('가입 확인 이메일을 보냈어요. 확인 후 로그인해 주세요.')
+      else setMessage('가입 확인 이메일을 보냈어요. 스팸함도 확인해 주세요.')
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError('이메일 또는 비밀번호를 확인해 주세요.')
