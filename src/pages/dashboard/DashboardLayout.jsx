@@ -79,7 +79,7 @@ export default function DashboardLayout() {
           <button
             onClick={handleDeleteAccount}
             disabled={deleting}
-            className="px-4 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-50 disabled:opacity-50"
+            className="text-xs text-gray-300 hover:text-red-400 py-1 disabled:opacity-50 transition-colors"
           >
             {deleting ? '탈퇴 처리 중...' : '회원 탈퇴'}
           </button>

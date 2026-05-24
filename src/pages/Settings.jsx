@@ -126,7 +126,7 @@ export default function Settings() {
       <button
         onClick={handleDeleteAccount}
         disabled={deleting}
-        className="w-full text-red-400 text-sm py-3 disabled:opacity-50"
+        className="w-full text-xs text-gray-300 hover:text-red-400 py-2 disabled:opacity-50 transition-colors"
       >
         {deleting ? '탈퇴 처리 중...' : '회원 탈퇴'}
       </button>
