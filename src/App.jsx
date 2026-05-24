@@ -5,6 +5,11 @@ import Tax from './pages/Tax.jsx'
 import Settings from './pages/Settings.jsx'
 import Login from './pages/Login.jsx'
 import NavBar from './components/NavBar.jsx'
+import DashboardLayout from './pages/dashboard/DashboardLayout.jsx'
+import BizInfo from './pages/dashboard/BizInfo.jsx'
+import MonthlyReport from './pages/dashboard/MonthlyReport.jsx'
+import ExcelExport from './pages/dashboard/ExcelExport.jsx'
+import DashboardTax from './pages/dashboard/DashboardTax.jsx'
 import { useAuth } from './hooks/useAuth.js'
 
 function ProtectedLayout() {
@@ -36,11 +41,33 @@ function ProtectedLayout() {
   )
 }
 
+function DashboardGuard() {
+  const { session, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="text-gray-400 text-lg">불러오는 중...</span>
+      </div>
+    )
+  }
+
+  if (!session) return <Navigate to="/login" replace />
+  return <DashboardLayout />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<DashboardGuard />}>
+          <Route index element={<Navigate to="/dashboard/biz" replace />} />
+          <Route path="biz"    element={<BizInfo />} />
+          <Route path="report" element={<MonthlyReport />} />
+          <Route path="excel"  element={<ExcelExport />} />
+          <Route path="tax"    element={<DashboardTax />} />
+        </Route>
         <Route path="/*" element={<ProtectedLayout />} />
       </Routes>
     </BrowserRouter>
