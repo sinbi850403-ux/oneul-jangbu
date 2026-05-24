@@ -4,6 +4,7 @@ import Calendar from './pages/Calendar.jsx'
 import Tax from './pages/Tax.jsx'
 import Settings from './pages/Settings.jsx'
 import Login from './pages/Login.jsx'
+import Landing from './pages/Landing.jsx'
 import NavBar from './components/NavBar.jsx'
 import DashboardLayout from './pages/dashboard/DashboardLayout.jsx'
 import BizInfo from './pages/dashboard/BizInfo.jsx'
@@ -29,7 +30,6 @@ function ProtectedLayout() {
     <div className="flex flex-col min-h-screen max-w-md mx-auto">
       <div className="flex-1 pb-20">
         <Routes>
-          <Route path="/" element={<Navigate to="/input" replace />} />
           <Route path="/input" element={<Input />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/tax" element={<Tax />} />
@@ -39,6 +39,12 @@ function ProtectedLayout() {
       <NavBar />
     </div>
   )
+}
+
+function Home() {
+  const { session, loading } = useAuth()
+  if (loading) return null
+  return session ? <Navigate to="/input" replace /> : <Landing />
 }
 
 function DashboardGuard() {
@@ -60,6 +66,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashboardGuard />}>
           <Route index element={<Navigate to="/dashboard/biz" replace />} />
