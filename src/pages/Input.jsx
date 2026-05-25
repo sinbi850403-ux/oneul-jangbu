@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase.js'
 import { todayKST, toKSTDateString } from '../lib/date.js'
 import NumberInput from '../components/NumberInput.jsx'
 import Toast from '../components/Toast.jsx'
+// AdSense 승인 후: import AdBanner from '../components/AdBanner.jsx'
 
 const FIELDS = [
   { key: 'card',  label: '카드' },
@@ -108,6 +109,8 @@ export default function Input() {
       >
         초기화
       </button>
+
+      {/* AdSense 승인 후 활성화: <AdBanner className="mt-4 rounded-xl overflow-hidden" /> */}
 
       {toast && <Toast message={toast} onClose={() => setToast('')} />}
     </div>
