@@ -40,6 +40,18 @@ create policy "own sales" on sales
 create policy "own profile" on profiles
   for all using (auth.uid() = user_id);
 
+-- 푸시 구독 테이블
+create table push_subscriptions (
+  user_id uuid primary key references auth.users,
+  subscription text not null,
+  updated_at timestamptz default now()
+);
+
+alter table push_subscriptions enable row level security;
+
+create policy "own push" on push_subscriptions
+  for all using (auth.uid() = user_id);
+
 -- 신규 가입 시 profiles row 자동 생성
 create function handle_new_user()
 returns trigger as $$

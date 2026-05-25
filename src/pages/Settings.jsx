@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { usePush } from '../hooks/usePush.js'
 import Toast from '../components/Toast.jsx'
 
 export default function Settings() {
@@ -9,11 +10,15 @@ export default function Settings() {
   const [toast, setToast] = useState('')
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [pushLoading, setPushLoading] = useState(false)
+  const [userId, setUserId] = useState(null)
+  const { permission, subscribed, subscribe, unsubscribe } = usePush()
   const navigate = useNavigate()
 
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
+      setUserId(user.id)
       const { data } = await supabase
         .from('profiles')
         .select('shop_name, tax_type')
@@ -42,6 +47,23 @@ export default function Settings() {
   async function handleLogout() {
     await supabase.auth.signOut()
     navigate('/login')
+  }
+
+  async function handlePushToggle() {
+    if (!userId) return
+    setPushLoading(true)
+    try {
+      if (subscribed) {
+        await unsubscribe(userId)
+        setToast('알림을 껐어요 🔕')
+      } else {
+        const ok = await subscribe(userId)
+        if (ok) setToast('매일 저녁 매출 입력 알림을 보내드려요 🔔')
+        else setToast('알림 설정에 실패했어요. 브라우저 설정을 확인해주세요 ❌')
+      }
+    } finally {
+      setPushLoading(false)
+    }
   }
 
   async function handleDeleteAccount() {
@@ -100,6 +122,32 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      {/* 푸시 알림 설정 */}
+      {'Notification' in window && (
+        <div className="bg-white rounded-2xl shadow-sm p-5 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-800">매출 입력 알림</p>
+              <p className="text-xs text-gray-400 mt-0.5">매일 저녁 매출 기록을 알려드려요</p>
+            </div>
+            <button
+              onClick={handlePushToggle}
+              disabled={pushLoading || permission === 'denied'}
+              className={`relative w-12 h-6 rounded-full transition-colors duration-200 disabled:opacity-50 ${
+                subscribed ? 'bg-brand' : 'bg-gray-200'
+              }`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                subscribed ? 'translate-x-6' : 'translate-x-0'
+              }`} />
+            </button>
+          </div>
+          {permission === 'denied' && (
+            <p className="text-xs text-red-400 mt-2">브라우저에서 알림을 차단했어요. 브라우저 설정에서 허용해주세요.</p>
+          )}
+        </div>
+      )}
 
       <button
         onClick={handleSave}

@@ -83,6 +83,27 @@ async function postToBlogger(title, content, imageUrl) {
   return res.data.url
 }
 
+// Google Indexing API로 URL 색인 요청
+async function requestIndexing(url) {
+  if (!process.env.GOOGLE_INDEXING_SA_KEY) return  // SA 키 없으면 스킵
+  try {
+    const saKey = JSON.parse(process.env.GOOGLE_INDEXING_SA_KEY)
+    const auth = new google.auth.GoogleAuth({
+      credentials: saKey,
+      scopes: ['https://www.googleapis.com/auth/indexing'],
+    })
+    const client = await auth.getClient()
+    const res = await client.request({
+      url: 'https://indexing.googleapis.com/v3/urlNotifications:publish',
+      method: 'POST',
+      data: { url, type: 'URL_UPDATED' },
+    })
+    console.log(`🔍 색인 요청 완료: ${res.data.urlNotificationMetadata?.url}`)
+  } catch (err) {
+    console.warn(`⚠️  색인 요청 실패 (무시): ${err.message}`)
+  }
+}
+
 // 메인 실행
 async function main() {
   try {
@@ -97,6 +118,8 @@ async function main() {
 
     const postUrl = await postToBlogger(title, content, imageUrl)
     console.log(`🚀 포스팅 완료: ${postUrl}`)
+
+    await requestIndexing(postUrl)
   } catch (err) {
     console.error('❌ 오류:', err.message)
     process.exit(1)
