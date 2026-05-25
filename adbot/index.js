@@ -50,9 +50,12 @@ async function generatePost(keyword) {
   const text = message.content[0].text
   try {
     const json = JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] || '{}')
-    return json
+    return {
+      title: json.title || keyword,
+      content: json.content || `<p>${text}</p>`
+    }
   } catch {
-    return { title: keyword, content: text }
+    return { title: keyword, content: `<p>${text}</p>` }
   }
 }
 
