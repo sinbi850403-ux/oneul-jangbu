@@ -4,10 +4,13 @@ import { keywords } from './keywords.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-// 오늘 날짜 기준으로 키워드 순환
+// 하루 2회 (오전/오후) 키워드 순환
 function pickKeyword() {
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000)
-  return keywords[dayOfYear % keywords.length]
+  const now = new Date()
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)
+  const slot = now.getUTCHours() < 4 ? 0 : 1  // UTC 01:00 → slot 0 (오전), UTC 06:00 → slot 1 (오후)
+  const index = (dayOfYear * 2 + slot) % keywords.length
+  return keywords[index]
 }
 
 // loremflickr 이미지 URL 생성 (키워드 기반, 직접 URL, API 키 불필요)
@@ -23,18 +26,18 @@ async function generatePost(keyword) {
     max_tokens: 2000,
     messages: [{
       role: 'user',
-      content: `당신은 소상공인을 위한 실용적인 블로그 글을 쓰는 전문 작가입니다.
+      content: `당신은 한국 독자를 위한 실용적인 블로그 글을 쓰는 전문 작가입니다.
 
 키워드: "${keyword}"
-앱 이름: 오늘장부 (https://xn--wh1bw0st1gbrb.kr)
+앱 이름: 오늘장부 (https://xn--wh1bw0st1gbrb.kr) - 소상공인 일매출 기록 앱
 
 다음 조건을 지켜서 블로그 글을 HTML 형식으로 작성해주세요:
-1. 제목은 키워드를 포함한 실용적인 제목 (30자 이내)
-2. 본문 800~1200자, 소상공인이 실제로 유용하다고 느낄 실용적인 내용
-3. 오늘장부를 자연스럽게 1~2회만 언급 (광고 티 나지 않게)
+1. 제목은 키워드를 포함한 흥미로운 제목 (30자 이내)
+2. 본문 800~1200자, 독자에게 실제로 유용한 실용적인 내용
+3. 키워드가 소상공인/매출/세금 관련일 때만 오늘장부를 자연스럽게 1~2회 언급 (다른 주제엔 언급 생략)
 4. SEO를 위해 키워드를 제목과 본문에 자연스럽게 포함
 5. HTML 태그 사용: <h2>, <p>, <ul>, <li>, <strong> 등
-6. 마지막에 오늘장부 링크 포함: <a href="https://xn--wh1bw0st1gbrb.kr">오늘장부 무료로 시작하기</a>
+6. 소상공인/매출 관련 글에만 마지막에 링크 포함: <a href="https://xn--wh1bw0st1gbrb.kr">오늘장부 무료로 시작하기</a>
 
 응답 형식 (JSON):
 {
