@@ -10,9 +10,14 @@ function pickKeyword() {
   return keywords[dayOfYear % keywords.length]
 }
 
-// Picsum 무료 이미지 URL 생성 (키워드 기반 시드로 일관성 유지)
+// Picsum 무료 이미지 URL 생성 (숫자 시드로 일관성 유지)
 function getImageUrl(query, width = 800, height = 450) {
-  const seed = encodeURIComponent(query).slice(0, 20)
+  let hash = 0
+  for (let i = 0; i < query.length; i++) {
+    hash = ((hash << 5) - hash) + query.charCodeAt(i)
+    hash |= 0
+  }
+  const seed = Math.abs(hash) % 1000
   return `https://picsum.photos/seed/${seed}/${width}/${height}`
 }
 
