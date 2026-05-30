@@ -58,10 +58,14 @@ export default function Input() {
     else setToast('저장됐어요 ✅')
   }
 
-  function handleReset() {
-    if (window.confirm('입력한 내용을 모두 초기화할까요?')) {
-      setValues(EMPTY)
-    }
+  async function handleReset() {
+    if (!window.confirm('입력한 내용을 모두 초기화할까요?')) return
+    setValues(EMPTY)
+    const { data: { user } } = await supabase.auth.getUser()
+    await supabase.from('sales').upsert(
+      { user_id: user.id, sale_date: date, ...EMPTY, total: 0 },
+      { onConflict: 'user_id,sale_date' }
+    )
   }
 
   return (

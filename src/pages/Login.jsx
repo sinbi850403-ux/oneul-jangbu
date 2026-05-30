@@ -30,8 +30,12 @@ export default function Login() {
 
     if (isSignUp) {
       const { error } = await supabase.auth.signUp({ email, password })
-      if (error) setError(toKoreanError(error.message))
-      else setMessage('가입됐어요! 바로 로그인해 주세요.')
+      if (error) {
+        setError(toKoreanError(error.message))
+      } else {
+        setIsSignUp(false)
+        setMessage('가입됐어요! 이메일을 확인한 뒤 로그인해 주세요.')
+      }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(toKoreanError(error.message))
