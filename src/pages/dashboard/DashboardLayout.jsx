@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase.js'
+import AdBanner from '../../components/AdBanner.jsx'
 
 const menus = [
   { to: '/dashboard/input',  label: '매출 입력' },
@@ -91,8 +92,11 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto flex flex-col">
+        <div className="flex-1 p-8">
+          <Outlet />
+        </div>
+        <AdBanner className="w-full" />
       </main>
     </div>
   )

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 // Google AdSense 광고 배너 컴포넌트
 // AdSense 승인 후 data-ad-client, data-ad-slot 값 입력
 const AD_CLIENT = 'ca-pub-2764893290310463'
-const AD_SLOT = '' // 승인 후 광고 단위 슬롯 ID 입력
+const AD_SLOT = '7670654765'
 
 export default function AdBanner({ className = '' }) {
   useEffect(() => {
