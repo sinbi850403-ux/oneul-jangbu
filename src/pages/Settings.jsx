@@ -55,11 +55,11 @@ export default function Settings() {
     try {
       if (subscribed) {
         await unsubscribe(userId)
-        setToast('알림을 껐어요 🔕')
+        setToast('알림을 껐어요')
       } else {
         const ok = await subscribe(userId)
-        if (ok) setToast('매일 저녁 매출 입력 알림을 보내드려요 🔔')
-        else setToast('알림 설정에 실패했어요. 브라우저 설정을 확인해주세요 ❌')
+        if (ok) setToast('매일 저녁 매출 입력 알림을 보내드려요')
+        else setToast('알림 설정에 실패했어요. 브라우저 설정을 확인해주세요')
       }
     } finally {
       setPushLoading(false)
