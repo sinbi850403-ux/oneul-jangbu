@@ -6,7 +6,6 @@ import Settings from './pages/Settings.jsx'
 import Login from './pages/Login.jsx'
 import Landing from './pages/Landing.jsx'
 import NavBar from './components/NavBar.jsx'
-import AdBanner from './components/AdBanner.jsx'
 import DashboardLayout from './pages/dashboard/DashboardLayout.jsx'
 import BizInfo from './pages/dashboard/BizInfo.jsx'
 import MonthlyReport from './pages/dashboard/MonthlyReport.jsx'
@@ -42,7 +41,6 @@ function ProtectedLayout() {
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
-      <AdBanner className="w-full" />
       <NavBar />
     </div>
   )

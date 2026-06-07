@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import AdBanner from '../components/AdBanner.jsx'
 
 function Section({ children, className = '' }) {
   return (
@@ -194,6 +195,11 @@ export default function Landing() {
             </p>
           </div>
         </Section>
+      </div>
+
+      {/* 광고 */}
+      <div className="max-w-4xl mx-auto px-6 py-4">
+        <AdBanner className="rounded-xl overflow-hidden" />
       </div>
 
       {/* CTA */}
